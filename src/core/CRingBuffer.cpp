@@ -1,7 +1,7 @@
 #include <cstring>
 #include	"CRingBuffer.hh"
 
-namespace SCPPS
+namespace ACPPS
 {
 
 CRingBuffer::CRingBuffer()

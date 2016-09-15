@@ -23,7 +23,7 @@
 #include "CRingBuffer.hh"
 #include "CServer.hh"
 
-namespace SCPPS
+namespace ACPPS
 {
 class CClient
 {

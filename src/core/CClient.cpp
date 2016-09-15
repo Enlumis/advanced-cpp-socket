@@ -2,7 +2,7 @@
 #include <iomanip>
 #include "PacketDefault.hh"
 
-namespace SCPPS
+namespace ACPPS
 {
 std::map<PacketID, CClient::PacketHandler> CClient::_packetsMap;
 
@@ -18,6 +18,7 @@ CClient::CClient(CServer* server, const int socket, struct sockaddr_in addr)
 CClient::~CClient()
 {
 }
+
 bool CClient::handleDefautPacket(t_packet_data *packet_data) {
   PacketDefault testRead;
   testRead.unserialize(packet_data->data);

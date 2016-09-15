@@ -20,11 +20,12 @@
 
 #include "Packet.hh"
 #include "global.h"
+#include "ServiceLoader.hpp"
 
-namespace SCPPS 
+namespace ACPPS 
 {
 
-class CClient;
+class ServiceManager;
 
 class CServerException : public std::exception
 {
@@ -42,6 +43,8 @@ public:
 class CServer
 {
 private:
+  ServiceManager*       _serviceManager;
+  ServiceLoader         _serviceLoader;
   int                   _port;
   int                   _socket;
 
@@ -62,6 +65,7 @@ public:
   void disconnectClient(CClient *c);
   void clientAddWriteListening(CClient *c);
   void clientRemoveWriteListening(CClient *c);
+  void loadService(const std::string &serviceName);
 };
 
 }

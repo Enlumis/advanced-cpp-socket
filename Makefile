@@ -2,39 +2,77 @@ CC		= clang++
 
 RM		= rm -f
 
+COLOR_GREEN = "\033[0;32m"
+COLOR_RED = "\033[0;31m"
+COLOR_BLUE = "\033[0;34m"
+COLOR_CLEAR = "\033[0m"
+
 SRCDIR		= src
 OBJDIR		= obj
 
-CFLAGS		= -W -Werror -Wall -pedantic -Iinclude
+CXXFLAGS 	+= -W -Wextra -Wall
+CXXFLAGS 	+= -rdynamic -fPIC -Iinclude
 
 NAMESERVER	= server
+NAMECORE	= core
 
-SRCSERVER	= $(wildcard src/*.cpp)
+SRCCORE	= $(wildcard src/core/*.cpp)
+OBJCORE	= $(SRCCORE:%.cpp=%.o)
 
+SRCSERVER	= src/main.cpp
 OBJSERVER	= $(SRCSERVER:%.cpp=%.o)
+
+NAMESERVICE = service
+SRCUSERSERVICE = $(wildcard src/service/*.cpp)
+OBJUSERSERVICE = $(SRCUSERSERVICE:%.cpp=%.o)
 
 VPATH		= $(SRCDIR)
 
+src/core/%.o	: src/core/%.cpp
+	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
+src/server/%.o	: src/server/%.cpp
+	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
 %.o	: %.cpp
-	$(CC) -c $< $(CFLAGS) -Iinclude -o $@
+	$(CC) -c $< $(CXXFLAGS) -Iinclude -Isrc/core -o $@
 
-all: $(NAMESERVER)
+all: $(NAMECORE) $(NAMESERVER) $(NAMESERVICE)
 
-$(NAMESERVER): $(OBJSERVER)
-	@$(CC) $(OBJSERVER) $(CFLAGS) -o $(NAMESERVER)
-	@echo "Compiling DONE: $@"
+
+
+
+lib$(NAMESERVICE).so: $(OBJUSERSERVICE)
+	$(CC) -shared $(OBJUSERSERVICE) -o lib$(NAMESERVICE).so
+	@echo $(COLOR_BLUE)"$@"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
+
+$(NAMESERVICE): lib$(NAMESERVICE).so
+
+
+$(NAMESERVER): $(OBJSERVER) $(NAMECORE)
+	$(CC) $(OBJSERVER) $(NAMECORE).a $(CFLAGS) -o $(NAMESERVER)
+	@echo $(COLOR_BLUE)"$@"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
+
+$(NAMECORE): $(OBJCORE)
+	ar rvs $(NAMECORE).a $(OBJCORE)
+	@echo $(COLOR_BLUE)"$@.a"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
 
 clean:
-	@echo "Cleaning compiled files"
-	@$(RM) $(OBJSERVER)
+	@printf $(COLOR_RED)"Cleaning compiled files\n"
+	$(RM) $(OBJCORE)
+	$(RM) $(OBJSERVER)
+	$(RM) $(OBJUSERSERVICE)
+	@printf $(COLOR_CLEAR)
 	
 sclean:
-	@echo "Cleaning compiled files"
-	@$(RM) $(OBJSERVER)
+	@$(MAKE) clean
 	
 fclean: clean
-	@echo "Cleaning executable"
-	@$(RM) $(NAMESERVER)
+	@printf $(COLOR_RED)"Cleaning executable\n"
+	$(RM) $(NAMECORE).a
+	$(RM) $(NAMESERVER)
+	$(RM) lib$(NAMESERVICE).so
+	@printf $(COLOR_GREEN)
+	@echo "Deep clean DONE"
+	@printf $(COLOR_CLEAR)
 
 
 re: fclean all sclean

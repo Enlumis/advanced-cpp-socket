@@ -1,5 +1,6 @@
-#include	"CServer.hh"
+#include "CServer.hh"
 #include "CClient.hh"
+#include "ServiceManager.hh"
 
 static void	exit_server(int sig)
 {
@@ -7,16 +8,18 @@ static void	exit_server(int sig)
   gg_exit = true;
 }
 
-namespace SCPPS
+namespace ACPPS
 {
 CServer::CServer(const int port)
-  : _port(port)
+  : _serviceManager(ServiceManager::getInstance()), _serviceLoader("."), _port(port)
 {
 	int					sock;
 	struct sockaddr_in	sin;
 	struct protoent		*protocol;
 	int					boole = 1;
 	int  				maxconnectionsocket = 6;
+
+	std::cout << coutprefix << "{** ACPPS **} Starting on port " << port <<std::endl;
 
  	signal(SIGINT, exit_server);
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -45,6 +48,15 @@ CServer::CServer(const int port)
 	std::cout << coutprefix << "ClientBuffer size: "<< CRING_BUFFER_SIZE <<std::endl;
 
 	gg_exit = false;
+}
+
+void CServer::loadService(const std::string &serviceName) {
+	try {
+		IService *service = this->_serviceLoader.loadService<IService>(serviceName);
+		this->_serviceManager->bindService(service);
+	}catch(ClassException &e){
+		std::cout << e.what() << std::endl;
+	}
 }
 
 CServer::~CServer()
@@ -92,29 +104,7 @@ void CServer::disconnectClient(CClient *c) {
 	c->closeSocket();
 	delete c;
 }
-/*
-void CServer::prepareWriteSet() 
-{
-	std::list<CClient*>::iterator it = this->_clientsList.begin();
-	while (it != this->_clientsList.end())
-	{
-		CClient* client = *it;
-		if (client->haveSomethingToSend())
-		{
-			if (client->isInQueue() == false)
-				FD_SET(client->getSocket(), &this->_write_set);
-			client->setInQueue(true);
-		}
-		else if (client->isInQueue())
-		{
-			client->setInQueue(false);
-			FD_CLR(client->getSocket(), &this->_write_set);
-		}
-		++it;
-	}
 
-}
-*/
 void CServer::clientRemoveWriteListening(CClient *c) {
 	FD_CLR(c->getSocket(), &this->_write_set);
 }
@@ -123,20 +113,27 @@ void CServer::clientAddWriteListening(CClient *c) {
 }
 void CServer::run()
 {
-	std::cout << coutprefix << "Server run on " << this->_port << " port" << std::endl;
+	if (!this->_serviceManager->startServices())
+	{
+		this->_serviceManager->stopServices();
+	}
+
+	std::cout << coutprefix << "Listening new client ... " << std::endl;
 	fd_set	cp_read;
 	fd_set	cp_write;
 
 	while (!gg_exit)
 	{
-		//this->prepareWriteSet();
 		cp_write = this->_write_set;
 		cp_read = this->_read_set;
 
 		if (select(this->_sockmax + 1, &cp_read, &cp_write, NULL, NULL) == -1)
 		{
 			if (errno == EINTR)
-				return ;
+			{
+				gg_exit = true;
+				break;				
+			}
 			throw CServerException("select method error");
 		}
 		if (FD_ISSET(this->_socket, &cp_read))

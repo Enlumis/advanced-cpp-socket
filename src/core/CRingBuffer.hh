@@ -19,22 +19,7 @@
 #include "global.h"
 #include "Packet.hh"
 
-#define CRING_BUFFER_SIZE 40
-
-typedef struct			s_packet_header
-{
-  unsigned short	packet_id;
-  unsigned int      packet_len;
-}__attribute__((__packed__))	t_packet_header;
-
-typedef struct			s_packet_data
-{
-  unsigned short	packet_id;
-  unsigned int      packet_len;
-  char		data[CRING_BUFFER_SIZE - sizeof(t_packet_header)];
-}__attribute__((__packed__))	t_packet_data;
-
-namespace SCPPS
+namespace ACPPS
 {
 
 class CRingBuffer 
