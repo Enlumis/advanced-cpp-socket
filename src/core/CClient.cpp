@@ -1,6 +1,7 @@
 #include	"CClient.hh"
 #include <iomanip>
 #include "PacketDefault.hh"
+#include "ServiceManager.hh"
 
 namespace ACPPS
 {
@@ -19,23 +20,10 @@ CClient::~CClient()
 {
 }
 
-bool CClient::handleDefautPacket(t_packet_data *packet_data) {
-  PacketDefault testRead;
-  testRead.unserialize(packet_data->data);
-  std::cout << coutprefix << "testRead { uchar:" << testRead._data.uchar_test 
-            << "ushort:" << testRead._data.ushort_test 
-            << "uint:" << testRead._data.uint_test 
-            << "short:" << testRead._data.short_test 
-            << "int:" << testRead._data.int_test 
-            << std::endl;
-
-  PacketDefault test;
-  this->sendPacket(test);
-  return true;
-}
 
 bool CClient::handlePacket(t_packet_data *packet)
 {
+
   std::cout << coutprefix << this->getIpAdress() << " Packet received completly (ID: "<< packet->packet_id 
     << ", PacketLength: " << (packet->packet_len + sizeof(t_packet_header)) 
     << ", DataLength: " << packet->packet_len 
@@ -51,6 +39,8 @@ bool CClient::handlePacket(t_packet_data *packet)
   std::cout << "]";
   std::cout << std::endl;
   std::cout.flags( f );
+
+  return this->_server->_serviceManager->handlePacket(packet->packet_id, packet, this);
 
   std::map<PacketID, PacketHandler>::iterator it = this->_packetsMap.find(static_cast<PacketID>(packet->packet_id));
 

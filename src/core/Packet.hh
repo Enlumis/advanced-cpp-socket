@@ -28,7 +28,7 @@ class Packet
 {
 public:
   Packet();
-  ~Packet();
+  virtual ~Packet();
 
 public:
   virtual size_t getPacketLength();

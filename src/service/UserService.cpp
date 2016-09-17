@@ -1,15 +1,17 @@
 #include	<iostream>
+#include "global.h"
 #include	"UserService.hh"
+#include "PacketDefault.hh"
 
-const std::string UserService::m_userServiceName = std::string("UserService");
-
-UserService::UserService()
+UserService::UserService() : Service("service")
 {
-	// register handler
+	this->registerPacketHandler(PACKET_DEFAULT, &UserService::handlePacketDefault);
 }
 
 bool		UserService::startService(ACPPS::ServiceManager *serviceManager)
 {
+	(void)serviceManager;
+	std::cout << coutprefix << "Service startService" << std::endl;
  // IService *databaseService = serviceManager->getService("DatabaseService");
  // if (!databaseService || !(m_database = dynamic_cast<IDatabase *>(databaseService)))
   //  {
@@ -21,33 +23,32 @@ bool		UserService::startService(ACPPS::ServiceManager *serviceManager)
   return true;
 }
 
-std::string	UserService::getServiceName() const
-{
-  return UserService::m_userServiceName;
+bool		UserService::handlePacketDefault(t_packet_data *packet, ACPPS::CClient *user) {
+	std::cout << coutprefix << "UserService::handlePacketDefault OK" << std::endl;
+
+	PacketDefault testRead;
+	testRead.unserialize(packet->data);
+	std::cout << coutprefix << "testRead { uchar:" << testRead._data.uchar_test 
+	        << "ushort:" << testRead._data.ushort_test 
+	        << "uint:" << testRead._data.uint_test 
+	        << "short:" << testRead._data.short_test 
+	        << "int:" << testRead._data.int_test 
+	        << std::endl;
+
+	PacketDefault test;
+	user->sendPacket(test);
+	return true;
 }
 
 void UserService::stopService()
-{
-
-}
-
-void		UserService::handlePacket(PacketID packetId, t_packet_data *buffer, ACPPS::CClient *user)
-{
-/*  std::cout << "[UserService] : executeTask..." << std::endl;
-  if (!user->isAuthentificated())
-    {
-      std::cout << "[UserService] : warning an user is not authenticate and he try to communicate with unauthorized service..." << std::endl;
-      user->disconnect();
-      return ;
-    }
-  void (UserService::*service)(SerializerBuffer *buffer, UserController *user);
-
-  if ((service = m_services[packetId]))
-    (this->*service)(buffer, user); */
-}
+{}
 
 void UserService::onServerEventClientDisconnected(ACPPS::CClient *user)
-{}
+{
+	(void)user;
+}
 
 void UserService::onServerEventClientConnected(ACPPS::CClient *user)
-{}
+{
+	(void)user;
+}

@@ -161,7 +161,8 @@ void CServer::run()
 			}
 		} 
 	}
-	std::cout << std::endl << coutprefix << "Server Terminated" << std::endl;
+	this->_serviceManager->stopServices();
+	std::cout << coutprefix << "Server Terminated" << std::endl;
 }
 
 CServerException::CServerException(const std::string &error) : m_error(error){}

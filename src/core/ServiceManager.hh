@@ -24,16 +24,16 @@ public:
   void stopServices();
 
   IService *getService(const std::string &name);
-  void registerPacket(IService *service, PacketID packetID);
-  void unregisterPacket(IService *service, PacketID packetID);
 
   bool handlePacket(uint16_t packetID, t_packet_data *buffer, CClient *user);
   void notifyServerEventClientConnected(CClient *user);
   void notifyServerEventClientDisconnected(CClient *user);
 
 private:
-  void	addPacketIdsFromService(IService *service);
-  void	delPacketIdsFromService(IService *service);
+  void registerPacket(IService *service, PacketID packetID);
+  void unregisterPacket(IService *service, PacketID packetID);
+  void  addPacketIdsFromService(IService *service);
+  void  delPacketIdsFromService(IService *service);
 
 private:
   std::map<PacketID, std::list<IService *> > _mapRegister;

@@ -1,5 +1,4 @@
-#ifndef CRINGBUFFER_H_
-# define CRINGBUFFER_H_
+#pragma once
 
 # include	<iostream>
 # include	<string>
@@ -22,7 +21,7 @@
 namespace ACPPS
 {
 
-class CRingBuffer 
+class ByteBuffer 
 {
 public:
   char			_realbuffer[CRING_BUFFER_SIZE];
@@ -30,8 +29,8 @@ public:
   size_t		_realbufferSize;
 
 public:
-  CRingBuffer();
-  ~CRingBuffer();
+  ByteBuffer();
+  ~ByteBuffer();
 
   int readSocket(int sock);
   int sendSocket(int sock);
@@ -42,5 +41,3 @@ public:
 
 };
 }
-
-#endif

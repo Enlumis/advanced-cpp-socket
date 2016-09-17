@@ -1,23 +1,23 @@
 #include <cstring>
-#include	"CRingBuffer.hh"
+#include	"ByteBuffer.hh"
 
 namespace ACPPS
 {
 
-CRingBuffer::CRingBuffer()
+ByteBuffer::ByteBuffer()
 {
   this->_realbufferSize = 0;
 }
 
-CRingBuffer::~CRingBuffer()
+ByteBuffer::~ByteBuffer()
 {
 }
 
-size_t CRingBuffer::getBufferLength() {
+size_t ByteBuffer::getBufferLength() {
   return this->_realbufferSize;
 }
 
-bool CRingBuffer::pushPacket(Packet &p) {
+bool ByteBuffer::pushPacket(Packet &p) {
   t_packet_header h;
   h.packet_id = p.getPacketID();
   h.packet_len = p.getPacketLength();
@@ -32,7 +32,7 @@ bool CRingBuffer::pushPacket(Packet &p) {
   return true;
 }
 
-int CRingBuffer::sendSocket(int socket) {
+int ByteBuffer::sendSocket(int socket) {
   int need_send = this->_realbufferSize;
   int wd = send(socket, this->_realbuffer, need_send, 0);
   if (wd == -1) {
@@ -44,7 +44,7 @@ int CRingBuffer::sendSocket(int socket) {
   return wd;
 }
 
-int CRingBuffer::readSocket(int socket) {
+int ByteBuffer::readSocket(int socket) {
   int need_read = CRING_BUFFER_SIZE - this->_realbufferSize;
   if (need_read == 0)
     return -2;
@@ -54,7 +54,7 @@ int CRingBuffer::readSocket(int socket) {
   return rd;
 }
 
-t_packet_data* CRingBuffer::extractPacket() {
+t_packet_data* ByteBuffer::extractPacket() {
   t_packet_data* packet = (t_packet_data*)this->_realbuffer;
 
   if (this->_realbufferSize >= sizeof(t_packet_header) && 

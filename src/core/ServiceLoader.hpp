@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "IService.hh"
+#include "global.h"
+#include "Service.hpp"
 #include "ILibLoader.hh"
 #include "UnixLibLoader.hh"
 
@@ -40,7 +41,7 @@ public:
     sharedName += ".so";
 #endif
 
-    std::cout << "[Service Loader] : load " << serviceName << std::endl;
+    std::cout << coutprefix << "[Service Loader] : load " << serviceName << std::endl;
 
     loader->open(sharedName);
     T*(*createObj)() = reinterpret_cast<T* (*)()>(loader->findSymbol("creatorService"));

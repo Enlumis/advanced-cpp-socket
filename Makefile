@@ -32,6 +32,8 @@ src/core/%.o	: src/core/%.cpp
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
 src/server/%.o	: src/server/%.cpp
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
+src/main.o	: src/main.cpp
+	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
 %.o	: %.cpp
 	$(CC) -c $< $(CXXFLAGS) -Iinclude -Isrc/core -o $@
 
@@ -41,7 +43,7 @@ all: $(NAMECORE) $(NAMESERVER) $(NAMESERVICE)
 
 
 lib$(NAMESERVICE).so: $(OBJUSERSERVICE)
-	$(CC) -shared $(OBJUSERSERVICE) -o lib$(NAMESERVICE).so
+	$(CC) -shared $(OBJUSERSERVICE) $(NAMECORE).a -o lib$(NAMESERVICE).so
 	@echo $(COLOR_BLUE)"$@"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
 
 $(NAMESERVICE): lib$(NAMESERVICE).so

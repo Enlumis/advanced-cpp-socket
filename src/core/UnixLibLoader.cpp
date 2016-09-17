@@ -1,6 +1,7 @@
 #include	<iostream>
 #include	<dlfcn.h>
 #include	<string>
+#include "global.h"
 #include	"UnixLibLoader.hh"
 #include	"ClassException.hh"
 
@@ -16,7 +17,7 @@ UnixLibLoader::~UnixLibLoader()
 
 void	UnixLibLoader::open(std::string const &libPath) throw(ClassException)
 {
-  std::cout << "[UnixLibLoader] Open dynamic libarry : " << libPath << std::endl;
+  std::cout << coutprefix << "[UnixLibLoader] Open dynamic libarry : " << libPath << std::endl;
   m_openedLib = dlopen(libPath.c_str(), RTLD_LAZY);
   if (!m_openedLib)
     throw ClassException(std::string("dlopen failed: ") + dlerror());

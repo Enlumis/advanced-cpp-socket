@@ -20,7 +20,7 @@
 
 #include "global.h"
 
-#include "CRingBuffer.hh"
+#include "ByteBuffer.hh"
 #include "CServer.hh"
 
 namespace ACPPS
@@ -39,8 +39,8 @@ private:
 
 	bool                _is_in_queue;
 public:
-	CRingBuffer        _read_buf;
-	CRingBuffer        _write_buf;
+	ByteBuffer        _read_buf;
+	ByteBuffer        _write_buf;
 
 public:
 	CClient(CServer* server, const int socket, struct sockaddr_in addr);

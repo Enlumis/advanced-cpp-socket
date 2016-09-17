@@ -2,27 +2,22 @@
 
 # include	<list>
 # include	<string>
-# include	"IUserService.hh"
+# include	"Service.hpp"
 # include	"ServiceManager.hh"
 
 
-class UserService : public IUserService
+class UserService : public ACPPS::Service<UserService>
 {
-public:
-  static const std::string	m_userServiceName;
-
 public:
   UserService();
   ~UserService() {}
 
-  void				handlePacket(PacketID packetId, t_packet_data *packet, ACPPS::CClient *user);
+  bool        handlePacketDefault(t_packet_data *buffer, ACPPS::CClient *user);
+
   bool				startService(ACPPS::ServiceManager *serviceManager);
   void				stopService();
-  std::string			getServiceName() const;
   void				onServerEventClientDisconnected(ACPPS::CClient *user);
   void				onServerEventClientConnected(ACPPS::CClient *user);
-
-
 
 private:
   UserService(const UserService &);

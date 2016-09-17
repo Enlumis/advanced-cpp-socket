@@ -1,7 +1,9 @@
 #ifndef CGLOBAL_H_
 # define CGLOBAL_H_
 
-#define coutprefix __FILE__<<":"<<__LINE__<<"> "
+#include <iomanip>
+
+#define coutprefix std::left << std::setw(34) << std::setfill(' ')<< (std::string(__FILE__)+":"+std::to_string(__LINE__)+"> ")
 
 static bool  gg_exit = false;
 

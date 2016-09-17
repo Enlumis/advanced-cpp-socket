@@ -42,8 +42,9 @@ public:
 
 class CServer
 {
-private:
+public:
   ServiceManager*       _serviceManager;
+private:
   ServiceLoader         _serviceLoader;
   int                   _port;
   int                   _socket;

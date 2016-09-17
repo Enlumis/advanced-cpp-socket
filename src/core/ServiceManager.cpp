@@ -28,12 +28,12 @@ IService *ServiceManager::getService(const std::string &name)
   std::list<IService *>::iterator it = this->_services.begin();
 
   while (it != this->_services.end())
-    {
-      std::string serviceName = (*it)->getServiceName();
-      if (name.compare(serviceName) == 0)
-	return (*it);
-      ++it;
-    }
+  {
+    std::string serviceName = (*it)->getServiceName();
+    if (name.compare(serviceName) == 0)
+      return (*it);
+    ++it;
+  }
   return NULL;
 }
 
@@ -63,38 +63,11 @@ void ServiceManager::bindAtRuntimeService(IService *service)
 {
   if (service->startService(this))
     {
-      std::cout << "[ServiceManager] : '" << service->getServiceName() << "' started" << std::endl;
+      std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' started at runtime" << std::endl;
       this->_services.push_back(service);
+    }else{
+      std::cout << coutprefix << "[ServiceManager] : ERROR failed to start '" << service->getServiceName() << "'" << std::endl;
     }
-}
-
-void	ServiceManager::addPacketIdsFromService(IService *service)
-{
-/*  const std::list<PacketID>	&packetIds = service->getPacketIds();
-
-  for (std::list<PacketID>::const_iterator it = packetIds.begin();
-       it != packetIds.end();
-       ++it)
-    {
-      std::cout << "[ServiceManager] : '" << service->getServiceName()
-		<< "' has registered packet ID '" << (*it) << "'" << std::endl;
-      registerPacket(service, (*it));
-    }
-    */
-}
-
-void	ServiceManager::delPacketIdsFromService(IService *service)
-{
-/*  const std::list<PacketID>	&packetIds = service->getPacketIds();
-
-  for (std::list<PacketID>::const_iterator it = packetIds.begin();
-       it != packetIds.end();
-       ++it)
-    {
-      std::cout << "[ServiceManager] : '" << service->getServiceName()
-		<< "' has unregistered packet ID '" << (*it) << "'" << std::endl;
-      unregisterPacket(service, (*it));
-    }*/
 }
 
 bool ServiceManager::startServices()
@@ -102,18 +75,18 @@ bool ServiceManager::startServices()
   std::list<IService *>::iterator it = this->_services.begin();
 
   while (it != this->_services.end())
+  {
+    if (!(*it)->startService(this))
     {
+      std::cout << coutprefix << "[ServiceManager] : ERROR failed to start '" << (*it)->getServiceName() << "'" << std::endl;
+      it = this->_services.erase(it);
+      return false;
+    }else{
       addPacketIdsFromService((*it));
-      if (!(*it)->startService(this))
-	{
-	  std::cout << "[ServiceManager] : ERROR failed to start '" << (*it)->getServiceName() << "'" << std::endl;
-	  it = this->_services.erase(it);
-	  return false;
-	}else{
-	std::cout << "[ServiceManager] : '" << (*it)->getServiceName() << "' started" << std::endl;
-	++it;
-      }
+      std::cout << coutprefix << "[ServiceManager] : '" << (*it)->getServiceName() << "' started" << std::endl;
+      ++it;
     }
+  }
   return true;
 }
 
@@ -125,8 +98,32 @@ void ServiceManager::stopServices()
     {
       delPacketIdsFromService((*it));
       (*it)->stopService();
-      std::cout << "[ServiceManager] : '" << (*it)->getServiceName() << "' stopped" << std::endl;
+      std::cout << coutprefix << "[ServiceManager] : '" << (*it)->getServiceName() << "' stopped" << std::endl;
       ++it;
+    }
+}
+
+void  ServiceManager::addPacketIdsFromService(IService *service)
+{
+  const std::list<PacketID>  &packetIds = service->getPacketIds();
+
+  for (std::list<PacketID>::const_iterator it = packetIds.begin();
+       it != packetIds.end();
+       ++it)
+    {
+      registerPacket(service, (*it));
+    }
+}
+
+void  ServiceManager::delPacketIdsFromService(IService *service)
+{
+  const std::list<PacketID>  &packetIds = service->getPacketIds();
+
+  for (std::list<PacketID>::const_iterator it = packetIds.begin();
+       it != packetIds.end();
+       ++it)
+    {
+      unregisterPacket(service, (*it));
     }
 }
 
@@ -138,13 +135,14 @@ void ServiceManager::registerPacket(IService *service, PacketID packetID)
   if (it == this->_mapRegister.end()){
     serviceList = std::list<IService * >();
     serviceList.push_back(service);
-    this->_mapRegister.insert(std::make_pair(packetID, serviceList));
   }
   else
-    {
+  {
     serviceList = (*it).second;
     serviceList.push_back(service);
   }
+  this->_mapRegister.insert(std::make_pair(packetID, serviceList));
+  std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' has registered packet ID '" << packetID << "'" << std::endl;
 }
 
 void ServiceManager::unregisterPacket(IService *service, PacketID packetID)
@@ -153,12 +151,13 @@ void ServiceManager::unregisterPacket(IService *service, PacketID packetID)
   std::map<PacketID, std::list<IService *> >::iterator it = this->_mapRegister.find(packetID);
 
   if (it != this->_mapRegister.end())
-    {
-      serviceList = (*it).second;
-      serviceList.remove(service);
-      if (serviceList.size() == 0)
-	this->_mapRegister.erase(packetID);
-    }
+  {
+    serviceList = (*it).second;
+    serviceList.remove(service);
+    if (serviceList.size() == 0)
+      this->_mapRegister.erase(packetID);
+    std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' has unregistered packet ID '" << packetID << "'" << std::endl;
+  }
 }
 
 bool ServiceManager::handlePacket(uint16_t packetID, t_packet_data *buffer, CClient *user)
