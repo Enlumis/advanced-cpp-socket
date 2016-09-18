@@ -30,7 +30,11 @@ VPATH		= $(SRCDIR)
 all: $(NAMECORE) $(NAMESERVER) $(SERVICE)
 
 src/core/%.o	: src/core/%.cpp
+ifeq ($(SILENT),SILENT)
+	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -D $(SILENT) -o $@
+else
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
+endif
 src/server/%.o	: src/server/%.cpp
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
 src/main.o	: src/main.cpp

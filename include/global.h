@@ -7,8 +7,6 @@
 
 static bool  gg_exit = false;
 
-//#define SILENT
-
 #define CRING_BUFFER_SIZE 40
 
 #endif
