@@ -22,13 +22,12 @@ OBJCORE	= $(SRCCORE:%.cpp=%.o)
 SRCSERVER	= src/main.cpp
 OBJSERVER	= $(SRCSERVER:%.cpp=%.o)
 
-SERVICENAME?= service
-SRCUSERSERVICE = $(wildcard src/$(SERVICENAME)/*.cpp)
+SRCUSERSERVICE = $(wildcard src/$(SERVICE)/*.cpp)
 OBJUSERSERVICE = $(SRCUSERSERVICE:%.cpp=%.o)
 
 VPATH		= $(SRCDIR)
 
-all: $(NAMECORE) $(NAMESERVER) $(SERVICENAME)
+all: $(NAMECORE) $(NAMESERVER) $(SERVICE)
 
 src/core/%.o	: src/core/%.cpp
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
@@ -39,11 +38,11 @@ src/main.o	: src/main.cpp
 %.o	: %.cpp
 	$(CC) -c $< $(CXXFLAGS) -Iinclude -Isrc/core -o $@
 
-lib$(SERVICENAME).so: $(NAMECORE) $(OBJUSERSERVICE)
-	$(CC) -shared $(OBJUSERSERVICE) $(NAMECORE).a -o lib$(SERVICENAME).so
+lib$(SERVICE).so: $(NAMECORE) $(OBJUSERSERVICE)
+	$(CC) -shared $(OBJUSERSERVICE) $(NAMECORE).a -o lib$(SERVICE).so
 	@echo $(COLOR_BLUE)"$@"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
 
-$(SERVICENAME): lib$(SERVICENAME).so
+$(SERVICE): lib$(SERVICE).so
 
 
 $(NAMESERVER): $(OBJSERVER) $(NAMECORE)
@@ -56,12 +55,11 @@ $(NAMECORE): $(OBJCORE)
 
 clean:
 	@printf $(COLOR_RED)"Cleaning compiled files\n"
-	$(RM) $(OBJCORE)
-	$(RM) $(OBJSERVER)
-	$(RM) $(OBJUSERSERVICE)
+	$(eval FILEFOUND := $(shell find . -name "*.o" -type f))
+	$(RM) $(FILEFOUND)
 	@printf $(COLOR_CLEAR)
-	
-sclean:
+
+pclean:
 	@$(MAKE) clean
 	
 fclean: clean
@@ -74,6 +72,6 @@ fclean: clean
 	@printf $(COLOR_CLEAR)
 
 
-re: fclean all sclean
+re: fclean all pclean
 
 .PHONY: all clean fclean re
