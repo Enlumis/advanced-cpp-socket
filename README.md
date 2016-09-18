@@ -1,9 +1,16 @@
-# advanced-cpp-socket
-
 <h1>What is advanced-cpp-socket (ACPPS)</h1>
 advanced-cpp-socket also called ACPPS is a improved version of [simple-cpp-socket](https://github.com/Enlumis/simple-cpp-socket) (SCCPS).</br>
-ACPPS provide a modular system, allowing services creation and code modularty for a huge server development project</br>
+This project allow developers to run a TCP server very easily and create your own services for different usage and packet handling.
+ACPPS also provide a modular system for a huge server development project</br>
 <b>ACPPS does not need any dependance to compile</b>
+
+<h1>TODO</h1>
+- [ ] How to create a service and good pratices
+- [ ] Custom service compilation
+- [ ] How to create a packet
+- [ ] How to create a packet handler
+- [ ] How to send packets
+- [ ] Services available
 
 <h1>How to compile the server</h1>
 You must install Makefile to compile the projet
