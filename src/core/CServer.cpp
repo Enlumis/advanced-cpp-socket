@@ -10,8 +10,11 @@ static void	exit_server(int sig)
 
 namespace ACPPS
 {
-CServer::CServer(const int port)
-  : _serviceManager(ServiceManager::getInstance()), _serviceLoader("."), _port(port)
+CServer::CServer(const int port, const std::list<std::string> &serviceNames) : 
+  _serviceManager(ServiceManager::getInstance()), 
+  _serviceLoader("."), 
+  _servicesList(serviceNames), 
+  _port(port)
 {
 	int					sock;
 	struct sockaddr_in	sin;
@@ -19,7 +22,8 @@ CServer::CServer(const int port)
 	int					boole = 1;
 	int  				maxconnectionsocket = 6;
 
-	std::cout << coutprefix << "{** ACPPS **} Starting on port " << port <<std::endl;
+	std::cout << coutprefix << "{** ACPPS **}" <<std::endl;
+	std::cout << coutprefix << "[Server]" <<std::endl;
 
  	signal(SIGINT, exit_server);
 	sin.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -45,7 +49,22 @@ CServer::CServer(const int port)
 	FD_ZERO(&_read_set);
 	FD_SET(sock, &_read_set);
 
-	std::cout << coutprefix << "ClientBuffer size: "<< CRING_BUFFER_SIZE <<std::endl;
+	std::cout << coutprefix << "Config:" <<std::endl;
+	std::cout << coutprefix << "- Port: "<< port <<std::endl;
+	std::cout << coutprefix << "- ByteBuffer size: "<< CRING_BUFFER_SIZE <<std::endl;
+
+	std::cout << coutprefix << "[ServiceLoader]" <<std::endl;
+	std::list<std::string>::iterator it = this->_servicesList.begin();
+	while (it != this->_servicesList.end()){
+		this->loadService(*it);
+		++it;
+	}
+
+	std::cout << coutprefix << "[ServiceManager]" <<std::endl;
+	if (!this->_serviceManager->startServices())
+	{
+		this->_serviceManager->stopServices();
+	}
 
 	gg_exit = false;
 }
@@ -113,10 +132,6 @@ void CServer::clientAddWriteListening(CClient *c) {
 }
 void CServer::run()
 {
-	if (!this->_serviceManager->startServices())
-	{
-		this->_serviceManager->stopServices();
-	}
 
 	std::cout << coutprefix << "Listening new client ... " << std::endl;
 	fd_set	cp_read;

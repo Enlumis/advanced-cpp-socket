@@ -17,7 +17,6 @@ UnixLibLoader::~UnixLibLoader()
 
 void	UnixLibLoader::open(std::string const &libPath) throw(ClassException)
 {
-  std::cout << coutprefix << "[UnixLibLoader] Open dynamic libarry : " << libPath << std::endl;
   m_openedLib = dlopen(libPath.c_str(), RTLD_LAZY);
   if (!m_openedLib)
     throw ClassException(std::string("dlopen failed: ") + dlerror());

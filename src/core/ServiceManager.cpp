@@ -63,10 +63,10 @@ void ServiceManager::bindAtRuntimeService(IService *service)
 {
   if (service->startService(this))
     {
-      std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' started at runtime" << std::endl;
+      std::cout << coutprefix << "'" << service->getServiceName() << "' started at runtime" << std::endl;
       this->_services.push_back(service);
     }else{
-      std::cout << coutprefix << "[ServiceManager] : ERROR failed to start '" << service->getServiceName() << "'" << std::endl;
+      std::cout << coutprefix << "Failed to start '" << service->getServiceName() << "'" << std::endl;
     }
 }
 
@@ -78,12 +78,12 @@ bool ServiceManager::startServices()
   {
     if (!(*it)->startService(this))
     {
-      std::cout << coutprefix << "[ServiceManager] : ERROR failed to start '" << (*it)->getServiceName() << "'" << std::endl;
+      std::cout << coutprefix << "Failed to start '" << (*it)->getServiceName() << "'" << std::endl;
       it = this->_services.erase(it);
       return false;
     }else{
       addPacketIdsFromService((*it));
-      std::cout << coutprefix << "[ServiceManager] : '" << (*it)->getServiceName() << "' started" << std::endl;
+      std::cout << coutprefix << "'" << (*it)->getServiceName() << "' started" << std::endl;
       ++it;
     }
   }
@@ -98,7 +98,7 @@ void ServiceManager::stopServices()
     {
       delPacketIdsFromService((*it));
       (*it)->stopService();
-      std::cout << coutprefix << "[ServiceManager] : '" << (*it)->getServiceName() << "' stopped" << std::endl;
+      std::cout << coutprefix << "'" << (*it)->getServiceName() << "' stopped" << std::endl;
       ++it;
     }
 }
@@ -142,7 +142,7 @@ void ServiceManager::registerPacket(IService *service, PacketID packetID)
     serviceList.push_back(service);
   }
   this->_mapRegister.insert(std::make_pair(packetID, serviceList));
-  std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' has registered packet ID '" << packetID << "'" << std::endl;
+  std::cout << coutprefix << "'" << service->getServiceName() << "' has registered packet ID '" << packetID << "'" << std::endl;
 }
 
 void ServiceManager::unregisterPacket(IService *service, PacketID packetID)
@@ -156,7 +156,7 @@ void ServiceManager::unregisterPacket(IService *service, PacketID packetID)
     serviceList.remove(service);
     if (serviceList.size() == 0)
       this->_mapRegister.erase(packetID);
-    std::cout << coutprefix << "[ServiceManager] : '" << service->getServiceName() << "' has unregistered packet ID '" << packetID << "'" << std::endl;
+    std::cout << coutprefix << "'" << service->getServiceName() << "' has unregistered packet ID '" << packetID << "'" << std::endl;
   }
 }
 

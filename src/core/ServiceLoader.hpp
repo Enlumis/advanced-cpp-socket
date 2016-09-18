@@ -41,7 +41,7 @@ public:
     sharedName += ".so";
 #endif
 
-    std::cout << coutprefix << "[Service Loader] : load " << serviceName << std::endl;
+    std::cout << coutprefix << "Load: '" << sharedName << "'"<< std::endl;
 
     loader->open(sharedName);
     T*(*createObj)() = reinterpret_cast<T* (*)()>(loader->findSymbol("creatorService"));

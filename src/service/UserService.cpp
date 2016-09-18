@@ -11,7 +11,6 @@ UserService::UserService() : Service("service")
 bool		UserService::startService(ACPPS::ServiceManager *serviceManager)
 {
 	(void)serviceManager;
-	std::cout << coutprefix << "Service startService" << std::endl;
  // IService *databaseService = serviceManager->getService("DatabaseService");
  // if (!databaseService || !(m_database = dynamic_cast<IDatabase *>(databaseService)))
   //  {

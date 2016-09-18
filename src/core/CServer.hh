@@ -47,6 +47,7 @@ public:
 private:
   ServiceLoader         _serviceLoader;
   int                   _port;
+  std::list<std::string> _servicesList;
   int                   _socket;
 
   std::list<CClient*>    _clientsList;
@@ -56,7 +57,7 @@ private:
   int                   _sockmax;
 
 public:
-  CServer(const int port);
+  CServer(const int port, const std::list<std::string> &serviceNames);
   ~CServer();
 
 public:
@@ -66,7 +67,10 @@ public:
   void disconnectClient(CClient *c);
   void clientAddWriteListening(CClient *c);
   void clientRemoveWriteListening(CClient *c);
+
+private:
   void loadService(const std::string &serviceName);
+
 };
 
 }
