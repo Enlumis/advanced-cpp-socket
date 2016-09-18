@@ -58,6 +58,9 @@ clean:
 	$(eval FILEFOUND := $(shell find . -name "*.o" -type f))
 	$(RM) $(FILEFOUND)
 	@printf $(COLOR_CLEAR)
+	
+sclean:
+	$(RM) $(OBJUSERSERVICE)
 
 pclean:
 	@$(MAKE) clean
