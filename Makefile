@@ -22,11 +22,13 @@ OBJCORE	= $(SRCCORE:%.cpp=%.o)
 SRCSERVER	= src/main.cpp
 OBJSERVER	= $(SRCSERVER:%.cpp=%.o)
 
-NAMESERVICE = service
-SRCUSERSERVICE = $(wildcard src/service/*.cpp)
+SERVICENAME?= service
+SRCUSERSERVICE = $(wildcard src/$(SERVICENAME)/*.cpp)
 OBJUSERSERVICE = $(SRCUSERSERVICE:%.cpp=%.o)
 
 VPATH		= $(SRCDIR)
+
+all: $(NAMECORE) $(NAMESERVER) $(SERVICENAME)
 
 src/core/%.o	: src/core/%.cpp
 	$(CC) -c $< $(CFLAGS) -Iinclude -Isrc/core -o $@
@@ -37,16 +39,11 @@ src/main.o	: src/main.cpp
 %.o	: %.cpp
 	$(CC) -c $< $(CXXFLAGS) -Iinclude -Isrc/core -o $@
 
-all: $(NAMECORE) $(NAMESERVER) $(NAMESERVICE)
-
-
-
-
-lib$(NAMESERVICE).so: $(OBJUSERSERVICE)
-	$(CC) -shared $(OBJUSERSERVICE) $(NAMECORE).a -o lib$(NAMESERVICE).so
+lib$(SERVICENAME).so: $(NAMECORE) $(OBJUSERSERVICE)
+	$(CC) -shared $(OBJUSERSERVICE) $(NAMECORE).a -o lib$(SERVICENAME).so
 	@echo $(COLOR_BLUE)"$@"$(COLOR_GREEN)" [DONE]"$(COLOR_CLEAR)
 
-$(NAMESERVICE): lib$(NAMESERVICE).so
+$(SERVICENAME): lib$(SERVICENAME).so
 
 
 $(NAMESERVER): $(OBJSERVER) $(NAMECORE)
@@ -71,7 +68,7 @@ fclean: clean
 	@printf $(COLOR_RED)"Cleaning executable\n"
 	$(RM) $(NAMECORE).a
 	$(RM) $(NAMESERVER)
-	$(RM) lib$(NAMESERVICE).so
+	$(RM) lib*.so
 	@printf $(COLOR_GREEN)
 	@echo "Deep clean DONE"
 	@printf $(COLOR_CLEAR)
