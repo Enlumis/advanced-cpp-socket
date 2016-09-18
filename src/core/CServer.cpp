@@ -119,7 +119,9 @@ void CServer::acceptClient() {
 }
 void CServer::disconnectClient(CClient *c) {
 	this->_clientsList.remove(c);
+#ifndef SILENT
 	std::cout << coutprefix << c->getIpAdress() << " Disconnected" << std::endl;
+#endif
 	c->closeSocket();
 	delete c;
 }

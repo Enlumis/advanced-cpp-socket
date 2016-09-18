@@ -40,7 +40,9 @@ int ByteBuffer::sendSocket(int socket) {
   }
   memcpy(this->_realbuffer, this->_realbuffer + wd, CRING_BUFFER_SIZE - wd);     
   this->_realbufferSize -= wd;
+#ifndef SILENT
   std::cout << coutprefix << "Bytes sended: "<< wd << ", bytes rest: " << this->_realbufferSize << std::endl;
+#endif
   return wd;
 }
 
@@ -50,7 +52,9 @@ int ByteBuffer::readSocket(int socket) {
     return -2;
   int rd = recv(socket, this->_realbuffer + this->_realbufferSize, need_read, 0);
   this->_realbufferSize += rd;
+#ifndef SILENT
   std::cout << coutprefix << "Bytes read :"<< rd << std::endl;
+#endif
   return rd;
 }
 

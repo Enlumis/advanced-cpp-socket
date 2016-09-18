@@ -13,7 +13,9 @@ CClient::CClient(CServer* server, const int socket, struct sockaddr_in addr)
   this->_is_in_queue = false;
   this->_addr = addr;
   this->_straddr = std::string(inet_ntoa(addr.sin_addr));
+#ifndef SILENT
   std::cout << coutprefix << "Connect " << inet_ntoa(addr.sin_addr) << std::endl;
+#endif
 }
 
 CClient::~CClient()
@@ -24,6 +26,7 @@ CClient::~CClient()
 bool CClient::handlePacket(t_packet_data *packet)
 {
 
+#ifndef SILENT
   std::cout << coutprefix << this->getIpAdress() << " Packet received completly (ID: "<< packet->packet_id 
     << ", PacketLength: " << (packet->packet_len + sizeof(t_packet_header)) 
     << ", DataLength: " << packet->packet_len 
@@ -39,6 +42,7 @@ bool CClient::handlePacket(t_packet_data *packet)
   std::cout << "]";
   std::cout << std::endl;
   std::cout.flags( f );
+#endif
 
   return this->_server->_serviceManager->handlePacket(packet->packet_id, packet, this);
 
@@ -83,10 +87,12 @@ bool CClient::sendPacket(Packet &p) {
   if (this->_is_in_queue == false) {
     this->_server->clientAddWriteListening(this);
   }
+#ifndef SILENT
   std::cout << coutprefix << this->getIpAdress() << " Packet ready to send (ID: "<< p.getPacketID() 
     << ", PacketLength: " << (p.getPacketLength()  + sizeof(t_packet_header)) 
     << ", DataLength: " << p.getPacketLength()
     << ")"<< std::endl;
+#endif
   return true;
 }
 bool CClient::doWrite() {
