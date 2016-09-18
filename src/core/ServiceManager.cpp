@@ -168,11 +168,12 @@ bool ServiceManager::handlePacket(uint16_t packetID, t_packet_data *buffer, CCli
     std::list<IService *>::iterator serviceIt = (*it).second.begin();
     while (serviceIt != (*it).second.end())
       {
-	(*serviceIt)->handlePacket(static_cast<PacketID>(packetID), buffer, user);
-	++serviceIt;
+        (*serviceIt)->handlePacket(static_cast<PacketID>(packetID), buffer, user);
+        ++serviceIt;
       }
     return true;
   }
+  std::cout << coutprefix << "Packet ID '" << packetID << "' packet forcing from the client "<< user->getIpAdress() << std::endl;
   return false;
 }
 }
