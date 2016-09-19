@@ -30,6 +30,11 @@ To hard clean the project, use the command line:
 ```
 make fclean
 ```
+To compile the server in SILENT mode add SILENT=SILENT to the command line and use the recompilation rule,
+this will delete all the noisy output and improve the packet handling performance:
+```
+make re SILENT=SILENT
+```
 <h1>How to compile a service</h1>
 When you created your service, you can compile and make it compatible with the server core.
 To compile your service use the command line below replacing name by your service directory:
