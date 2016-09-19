@@ -25,7 +25,7 @@ public:
 
   IService *getService(const std::string &name);
 
-  bool handlePacket(uint16_t packetID, t_packet_data *buffer, CClient *user);
+  bool handlePacket(uint16_t packetID, t_packet_data *packet_data, CClient *user);
   void notifyServerEventClientConnected(CClient *user);
   void notifyServerEventClientDisconnected(CClient *user);
 

@@ -20,14 +20,24 @@ size_t ByteBuffer::getBufferLength() {
 bool ByteBuffer::pushPacket(Packet &p) {
   t_packet_header h;
   h.packet_id = p.getPacketID();
-  h.packet_len = p.getPacketLength();
+  SerializableBuffer buffer;
+  p.serialize(buffer);
+  h.packet_len = buffer.size();
   if (this->_realbufferSize + h.packet_len + sizeof(t_packet_header) >= CRING_BUFFER_SIZE) {
     std::cout << coutprefix << " [Server][FATAL ERROR] send buffer overflow" << std::endl;  
     return (false);
   }
   memcpy(this->_realbuffer + this->_realbufferSize, (char*)&h, sizeof(t_packet_header));
   this->_realbufferSize += sizeof(t_packet_header);
-  p.serialize(this->_realbuffer + this->_realbufferSize);
+  buffer.copyToBuffer(this->_realbuffer + this->_realbufferSize);
+  //p.serialize(this->_realbuffer + this->_realbufferSize);
+
+#ifndef SILENT
+  std::cout << coutprefix << "Packet inserted is the buffer (ID: "<< p.getPacketID() 
+    << ", PacketLength: " << (h.packet_len  + sizeof(t_packet_header)) 
+    << ", DataLength: " << h.packet_len
+    << ")"<< std::endl;
+#endif
   this->_realbufferSize += h.packet_len;
   return true;
 }

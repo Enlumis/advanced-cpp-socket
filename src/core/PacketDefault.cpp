@@ -13,13 +13,11 @@ PacketDefault::~PacketDefault() {
 PacketID PacketDefault::getPacketID() {
 	return PACKET_DEFAULT;
 }
-size_t PacketDefault::getPacketLength() {
-	return sizeof(t_packet_data_default);
+void PacketDefault::serialize(SerializableBuffer &dest) {
+	dest.writeToData<t_packet_data_default>(this->_data);
+	dest.writeToData<int>(42);
+	dest.writeToData<char>(42);
 }
-void PacketDefault::serialize(char *dest) {
-	memcpy(dest,(char*) &this->_data, sizeof(t_packet_data_default));
-}
-void PacketDefault::unserialize(char *src) {
-	t_packet_data_default *data_rebuild = (t_packet_data_default*)src;
-	this->_data = *data_rebuild;
+void PacketDefault::unserialize(SerializableBuffer &src) {
+	this->_data = src.readToData<t_packet_data_default>();
 }

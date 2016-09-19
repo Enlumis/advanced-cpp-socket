@@ -12,7 +12,7 @@ public:
   UserService();
   ~UserService() {}
 
-  bool        handlePacketDefault(t_packet_data *buffer, ACPPS::CClient *user);
+  bool        handlePacketDefault(SerializableBuffer &buffer, ACPPS::CClient *user);
 
   bool				startService(ACPPS::ServiceManager *serviceManager);
   void				stopService();

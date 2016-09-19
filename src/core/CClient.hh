@@ -45,6 +45,9 @@ public:
 public:
 	CClient(CServer* server, const int socket, struct sockaddr_in addr);
 	~CClient();
+private:
+	CClient(const CClient &);
+	CClient &operator=(const CClient &);
 
 public:
 	bool handleDefautPacket(t_packet_data *packet_data);
@@ -54,9 +57,6 @@ public:
 	std::string getIpAdress();
 	bool sendPacket(Packet &p);
 	void registerPacketHandler(PacketID p, PacketHandler h);
-
-	//  void setInQueue(bool b);
-	//  bool haveSomethingToSend();
 
 	int getSocket();
 	void closeSocket();

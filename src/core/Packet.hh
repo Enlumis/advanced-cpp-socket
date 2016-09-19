@@ -8,6 +8,7 @@
 
 #include "global.h"
 #include "PacketID.hh"
+#include "SerializableBuffer.hpp"
 
 typedef struct			s_packet_header
 {
@@ -31,10 +32,9 @@ public:
   virtual ~Packet();
 
 public:
-  virtual size_t getPacketLength();
   virtual PacketID getPacketID();
-  virtual void serialize(char *dest);
-  virtual void unserialize(char *src);
+  virtual void serialize(SerializableBuffer &dest);
+  virtual void unserialize(SerializableBuffer &src);
 };
 }
 

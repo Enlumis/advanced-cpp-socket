@@ -11,13 +11,10 @@ Packet::~Packet() {
 PacketID Packet::getPacketID() {
 	return PACKET_DEFAULT;
 }
-size_t Packet::getPacketLength() {
-	return 0;
-}
-void Packet::serialize(char *dest) {
+void Packet::serialize(SerializableBuffer &dest) {
 	(void)dest;
 }
-void Packet::unserialize(char *src) {
+void Packet::unserialize(SerializableBuffer &src) {
 	(void)src;
 }
 }

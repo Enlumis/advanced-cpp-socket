@@ -15,7 +15,7 @@ public:
 	IService() {};
 	virtual ~IService() {};
 
-	virtual void handlePacket(PacketID packetid, t_packet_data *buffer, CClient *user) = 0;
+	virtual bool handlePacket(PacketID packetid, SerializableBuffer &buffer, CClient *user) = 0;
 	virtual std::string	getServiceName() const = 0;
  	virtual const std::list<PacketID>	&getPacketIds() const = 0;
 

@@ -15,7 +15,7 @@ template <class T>
 class Service : public IService
 {
 public:
-	typedef bool (T::*ServicePacketHandler)(t_packet_data *packet, CClient *user);
+	typedef bool (T::*ServicePacketHandler)(SerializableBuffer &buffer, CClient *user);
 protected:
 	std::string _serviceName;
 	std::list<PacketID>	_packetIdsMap;
@@ -29,11 +29,12 @@ public:
 		this->_handlersMap[packetID] = handler;
 	}
 
-	void handlePacket(PacketID packetid, t_packet_data *buffer, CClient *user) {
+	bool handlePacket(PacketID packetid, SerializableBuffer &buffer, CClient *user) {
 		ServicePacketHandler handler = this->_handlersMap[packetid];
 
 		if (handler)
-			(static_cast<T*>(this)->*handler)(buffer, user);
+			return ((static_cast<T*>(this)->*handler)(buffer, user));
+		return false;
 	}
 	std::string	getServiceName() const {
 		return (this->_serviceName);

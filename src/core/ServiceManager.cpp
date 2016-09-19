@@ -160,7 +160,7 @@ void ServiceManager::unregisterPacket(IService *service, PacketID packetID)
   }
 }
 
-bool ServiceManager::handlePacket(uint16_t packetID, t_packet_data *buffer, CClient *user)
+bool ServiceManager::handlePacket(uint16_t packetID, t_packet_data *packet_data, CClient *user)
 {
   std::map<PacketID, std::list<IService *> >::iterator it = this->_mapRegister.find(static_cast<PacketID>(packetID));
 
@@ -168,7 +168,10 @@ bool ServiceManager::handlePacket(uint16_t packetID, t_packet_data *buffer, CCli
     std::list<IService *>::iterator serviceIt = (*it).second.begin();
     while (serviceIt != (*it).second.end())
       {
-        (*serviceIt)->handlePacket(static_cast<PacketID>(packetID), buffer, user);
+        SerializableBuffer buffer(packet_data->data, packet_data->packet_len);
+        if (!(*serviceIt)->handlePacket(static_cast<PacketID>(packetID), buffer, user)){
+          return false;
+        }
         ++serviceIt;
       }
     return true;

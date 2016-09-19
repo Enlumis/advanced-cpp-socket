@@ -21,10 +21,9 @@ public:
 	~PacketDefault();
 
 public:
-	size_t getPacketLength();
 	PacketID getPacketID();
-	void serialize(char *dest);
-	void unserialize(char *src);
+	void serialize(SerializableBuffer &dest);
+	void unserialize(SerializableBuffer &src);
 	
 public:
 	t_packet_data_default _data;

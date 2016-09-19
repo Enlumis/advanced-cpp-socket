@@ -18,9 +18,7 @@ CClient::CClient(CServer* server, const int socket, struct sockaddr_in addr)
 #endif
 }
 
-CClient::~CClient()
-{
-}
+CClient::~CClient(){}
 
 
 bool CClient::handlePacket(t_packet_data *packet)
@@ -43,7 +41,7 @@ bool CClient::handlePacket(t_packet_data *packet)
   std::cout << std::endl;
   std::cout.flags( f );
 #endif
-
+  
   return this->_server->_serviceManager->handlePacket(packet->packet_id, packet, this);
 
   std::map<PacketID, PacketHandler>::iterator it = this->_packetsMap.find(static_cast<PacketID>(packet->packet_id));
@@ -87,12 +85,6 @@ bool CClient::sendPacket(Packet &p) {
   if (this->_is_in_queue == false) {
     this->_server->clientAddWriteListening(this);
   }
-#ifndef SILENT
-  std::cout << coutprefix << this->getIpAdress() << " Packet ready to send (ID: "<< p.getPacketID() 
-    << ", PacketLength: " << (p.getPacketLength()  + sizeof(t_packet_header)) 
-    << ", DataLength: " << p.getPacketLength()
-    << ")"<< std::endl;
-#endif
   return true;
 }
 bool CClient::doWrite() {

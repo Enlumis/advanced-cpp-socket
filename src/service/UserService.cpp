@@ -22,11 +22,11 @@ bool		UserService::startService(ACPPS::ServiceManager *serviceManager)
   return true;
 }
 
-bool		UserService::handlePacketDefault(t_packet_data *packet, ACPPS::CClient *user) {
+bool		UserService::handlePacketDefault(SerializableBuffer &buffer, ACPPS::CClient *user) {
 	std::cout << coutprefix << "UserService::handlePacketDefault OK" << std::endl;
 
 	PacketDefault testRead;
-	testRead.unserialize(packet->data);
+	testRead.unserialize(buffer);
 	std::cout << coutprefix << "testRead { uchar:" << testRead._data.uchar_test 
 	        << "ushort:" << testRead._data.ushort_test 
 	        << "uint:" << testRead._data.uint_test 
