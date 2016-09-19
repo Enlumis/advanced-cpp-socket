@@ -26,7 +26,12 @@ bool		UserService::handlePacketDefault(SerializableBuffer &buffer, ACPPS::CClien
 	std::cout << coutprefix << "UserService::handlePacketDefault OK" << std::endl;
 
 	PacketDefault testRead;
-	testRead.unserialize(buffer);
+	try {
+		testRead.unserialize(buffer);
+	}catch (PacketBufferException &packet_exception) {
+		std::cout << coutprefix << "Serialization exception the client has send a bad packet (FORCE DISCONNECT)" << std::endl;
+		return false;
+	}
 	std::cout << coutprefix << "testRead { uchar:" << testRead._data.uchar_test 
 	        << "ushort:" << testRead._data.ushort_test 
 	        << "uint:" << testRead._data.uint_test 

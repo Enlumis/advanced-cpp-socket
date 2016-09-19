@@ -5,14 +5,14 @@
 #include <sstream>
 #include <exception>
 
-class SerializableBufferException : public std::exception
+class PacketBufferException : public std::exception
 {
   public:
-  SerializableBufferException() {}
-  virtual ~SerializableBufferException() throw() {};
+  PacketBufferException() {}
+  virtual ~PacketBufferException() throw() {};
   virtual const char* what() const throw()
   {
-    return ("SerializableBuffer exception");
+    return ("PacketBufferException exception");
   }
 };
 
@@ -38,7 +38,7 @@ class SerializableBuffer
   T readToData()
   {
     if (this->_size < sizeof(T))
-      throw SerializableBufferException();
+      throw PacketBufferException();
     T extractor;
 
     this->_stream.read(reinterpret_cast<char*>(&extractor), sizeof(T));
@@ -51,12 +51,12 @@ class SerializableBuffer
   std::string readToData(size_t size)
   {
     if (this->_size < size)
-      throw SerializableBufferException();
+      throw PacketBufferException();
     std::string str;
     try{
       str.resize(size);
     } catch (std::bad_alloc&){
-      throw SerializableBufferException();
+      throw PacketBufferException();
     }
     this->_stream.read(&str[0], size);
     this->_size -= size;
