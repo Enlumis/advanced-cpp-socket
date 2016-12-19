@@ -94,6 +94,8 @@ void CServer::acceptClient() {
 
 	if ((csock = accept(this->_socket, (struct sockaddr*)&caddr, &clen)) != -1)
 	{
+		int					boole = 1;
+		setsockopt(csock, SOL_SOCKET, SO_NOSIGPIPE, (void *)&boole, sizeof(boole));
 		
 		this->_clientsList.push_front(new CClient(this, csock, caddr));
 		FD_SET(csock, &this->_read_set);
@@ -151,7 +153,7 @@ void CServer::run()
 				gg_exit = true;
 				break;				
 			}
-			throw CServerException("select method error");
+			std::cout << coutprefix << "select method error" << std::endl;
 		}
 		if (FD_ISSET(this->_socket, &cp_read))
 			this->acceptClient();

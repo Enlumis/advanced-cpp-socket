@@ -68,7 +68,7 @@ bool CClient::doRead() {
     return (false);
   }
   t_packet_data *packet;
-  while ((packet = this->_read_buf.extractPacket()) != NULL) {
+  if ((packet = this->_read_buf.extractPacket()) != NULL) {
     if (!this->handlePacket(packet))
       return (false);
   }

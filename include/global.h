@@ -7,6 +7,6 @@
 
 static bool  gg_exit = false;
 
-#define CRING_BUFFER_SIZE 40
+#define CRING_BUFFER_SIZE 512
 
 #endif
